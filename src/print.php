@@ -133,13 +133,13 @@
 		}
 		
 		// Only print if we are in the same logLevel or higher
-		echo $preBlock;
 		if($logLevel >= $GLOBALS['logLevel']) {
+			echo $preBlock;
 			foreach ($arrayMessages as $key => $value) {
 				echo "$preLine $value $postLine";
 			}
+			echo $postBlock;
 		}
-		echo $postBlock;
 	}
 
 	function showAndDie($message){
