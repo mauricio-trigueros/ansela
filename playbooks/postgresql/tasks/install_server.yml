@@ -1,0 +1,13 @@
+---
+- include: prepare_install.yml
+
+- name: PostgreSQL | Install PostgreSQL Dev server
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "postgresql-9.6"
+    - "postgresql-client-9.6"
+    - "postgresql-contrib-9.6"
+    - "libpq-dev"

@@ -1,0 +1,26 @@
+---
+# Issue, moving the files one to one it is extremely slow.
+# We need to zip then in to a zip folder, and then move the zip folder.
+# If we want to move all the files without zip file, check the code below:
+
+- debug: msg="Deploying local zip folder {{deployment.fromlocal_zip}}"
+  when: deployment.fromlocal_zip is defined
+
+- debug: msg="Moving file  ->{{ deployment.fromlocal_zip }}<- to ->{{ deployment.local_path }}<-"
+
+- name: Deployment from local | Verifying that temp folder exist
+  file: >
+    path={{ deployment.local_path }}
+    state=directory
+
+- name: Deployment from local | Moving local files to remote temporal folder
+  unarchive: >
+    src={{deployment.fromlocal_zip}}
+    dest={{ deployment.local_path }}
+  when: deployment.fromlocal_zip is defined
+
+- include: moving_to_production.yml
+  when: deployment.fromlocal_zip is defined
+
+- include: deployment_end.yml
+  when: deployment.fromlocal_zip is defined

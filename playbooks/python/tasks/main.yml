@@ -1,0 +1,20 @@
+---
+- name: Python | Installing virtualenv
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "python-pip"
+    - "virtualenv"
+  tags: python-install-virtualenv
+
+# Probably this task will fail!! Review!
+- name: Python | Install requirements.txt
+  failed_when: false
+  pip: 
+    requirements="{{ project.root }}"/requirements.txt
+    virtualenv="{{ project.root }}"/venv
+    virtualenv_site_packages=yes
+    state=forcereinstall
+  tags: python-install-requirements

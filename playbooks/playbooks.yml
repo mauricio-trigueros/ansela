@@ -1,0 +1,19 @@
+---
+- hosts: "{{ project.server.target }}"
+  remote_user: "{{ project.server.user }}"
+  become: yes
+  gather_facts: false
+
+  roles:
+    - { role: system }
+    - { role: system-soft }  
+    - { role: postgresql }
+    - { role: python }
+    - { role: deployment }
+    - { role: nginx }
+    - { role: nodejs }
+    - { role: php }
+    - { role: mysql }
+    - { role: django }
+    - { role: mongo }
+    - { role: wordpress }

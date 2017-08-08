@@ -1,0 +1,12 @@
+---
+- name: PostgreSQL, configuring dev server | Listening to all IPs
+  lineinfile: dest=/etc/postgresql/9.6/main/postgresql.conf regexp="{{ item.before }}" line="{{ item.after }}"
+  with_items:
+  - { before: "#listen_addresses = 'localhost'", after: "listen_addresses = '*'" }
+  notify: Restart postgresql
+
+- name: PostgreSQL, configuring dev server | Removing password for connections
+  lineinfile: dest=/etc/postgresql/9.6/main/pg_hba.conf regexp="{{ item.before }}" line="{{ item.after }}"
+  with_items:
+  - { before: "host    all             all             127.0.0.1/32            md5", after: "host    all             all             0.0.0.0/0            md5" }
+  notify: Restart postgresql

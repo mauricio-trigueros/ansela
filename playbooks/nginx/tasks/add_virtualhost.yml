@@ -1,0 +1,14 @@
+---
+- name: Copy vhost to sites-available
+  template: >
+    src="{{ nginx.virtualhost }}"
+    dest=/etc/nginx/sites-available/{{project.name}}
+
+- name: Create a symlink to sites-enabled
+  file: >
+    src=/etc/nginx/sites-available/{{ project.name }}
+    dest=/etc/nginx/sites-enabled/{{ project.name }}
+    state=link
+
+- name: Restat nginx
+  service: name=nginx state=restarted

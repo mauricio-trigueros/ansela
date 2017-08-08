@@ -1,0 +1,31 @@
+---
+# https://wordpress.org/download/release-archive/
+# Choolse tar.gz version!
+# To calculate sha256sum: https://md5file.com/calculator
+- name: Download Wordpress to a temporal folder
+  get_url: url={{ wordpress.download.url }}
+           dest=/tmp/wordpress.tar.gz
+           force=no
+           sha256sum={{ wordpress.download.sha256sum }}
+
+# Wordpress installation folder
+- name: Remove previous wordpress production versions
+  file: path={{ wordpress.install.path }} state=absent
+
+- name: Check that the project file exist
+  file: path={{ wordpress.install.path }} state=directory
+
+# /tmp/wordpress.tar.gz contains a folder "wordpress" with all the files.
+# we need to unzip the file, and move all content in "wordpress" folder to wordpress.install.path
+- name: Unpack Wordpress in a temporal folder
+  unarchive: src=/tmp/wordpress.tar.gz dest=/tmp copy=no
+
+- name: Move zip content
+  shell: chdir=/tmp/wordpress mv * {{ wordpress.install.path }}
+  notify: wordpress folder permissions
+
+- name: Remove wordpress temporal zip and folder
+  file: path={{ item }} state=absent
+  with_items:
+  - /tmp/wordpress.tar.gz
+  - /tmp/wordpress

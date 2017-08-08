@@ -1,0 +1,23 @@
+---
+- name: Set locales | Installing apt package for selected language
+  apt: name="{{ system.set_locales.package }}" state=installed update_cache=yes
+
+- name: Set locales | Checking locale is installed in the system
+  locale_gen: name="{{ system.set_locales.name }}" state=present
+
+- name: Set locales | Update locale LANGUAGE
+  command: update-locale LANGUAGE="{{ system.set_locales.name }}"
+  become: true
+
+- name: Set locales | Update locale LC_ALL
+  command: update-locale LC_ALL="{{ system.set_locales.name }}"
+  become: true
+
+- name: Set locales | Update locale LC_ALL
+  command: timedatectl set-timezone "{{ system.set_locales.timezone }}"
+  become: true
+
+- name: Set locales | Reconfiguring timezone
+  command: dpkg-reconfigure --frontend noninteractive tzdata
+
+# To test locales: run "locale"

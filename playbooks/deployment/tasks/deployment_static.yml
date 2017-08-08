@@ -1,0 +1,6 @@
+---
+- include: deployment_ini.yml
+
+- include: moving_to_production.yml
+
+- include: deployment_end.yml

@@ -1,0 +1,11 @@
+---
+# In Ubuntu 16.04 LTS, default PHP is PHP7
+- name: Install PHP | Installing PHP7
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  - "php7.0"
+  tags: php-install-php7
+
+- name: Install PHP | Installing PHP7 FPM
+  apt: name="php7.0-fpm" state=installed update_cache=yes
+  tags: php-install-php7-fpm

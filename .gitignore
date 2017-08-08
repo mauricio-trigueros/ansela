@@ -1,0 +1,8 @@
+playbooks/playbooks.retry
+.DS_Store
+ansible-hosts
+
+# This files holds user projects and settings,
+# they should never go to the repository
+projects.php
+settings.php

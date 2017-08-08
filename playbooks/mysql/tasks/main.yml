@@ -1,0 +1,47 @@
+---
+- include: install_dev_server.yml
+  tags: mysql-install-dev-server
+
+- include: populate_db.yml
+  tags: mysql-populate-db
+
+# In order to use in staging/production mysql tag commands (like create user, drop database...)
+# we need to install some packages.
+- name: Install MySQL client tools
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  - python-mysqldb
+  - mysql-client
+  tags: mysql-install-client
+
+# Create mysql app user, with root credentials
+- name: Create MySQL user in development database
+  mysql_user: >
+    name={{ mysql.user.username }}
+    password={{ mysql.user.password }}
+    priv={{ mysql.server.db }}.*:ALL,GRANT 
+    state=present
+    host=%
+    login_user={{ mysql.root.username }}
+    login_password={{ mysql.root.password }}
+  tags: mysql-server-create-user
+
+- name: Create MySQL database with user
+  mysql_db: >
+    name={{ mysql.server.db }}
+    state=present
+    login_host={{ mysql.server.host }}
+    login_user={{ mysql.user.username }}
+    login_password={{ mysql.user.password }}
+    login_port={{ mysql.server.port }}
+  tags: mysql-server-create-db-with-user
+
+- name: Create MySQL database with root
+  mysql_db: >
+    name={{ mysql.server.db }}
+    state=present
+    login_host={{ mysql.server.host }}
+    login_user={{ mysql.root.username }}
+    login_password={{ mysql.root.password }}
+    login_port={{ mysql.server.port }}
+  tags: mysql-server-create-db-with-root

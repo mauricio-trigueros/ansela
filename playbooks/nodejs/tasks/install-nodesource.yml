@@ -1,0 +1,28 @@
+---
+# https://github.com/nodesource/distributions#manual-installation
+# This script works only for Ubuntu 16.04 LTS, Ubuntu 14.04 LTS has Python 2.7.6, so we need to install
+# python extra packages.
+# Make sure your managed systems have a valid CA certificate installed, to perform SNI verification
+# you need python >= 2.7.9 on your managed machine
+# or you can install the `urllib3`, `pyopenssl`, `ndg-httpsclient`, and `pyasn1` python modules (python >= 2.6)
+
+- name: Installing NodeJS with NodeSource | Import the NodeSource GPG key into apt
+  become: yes
+  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key state=present
+
+- name: Installing NodeJS with NodeSource | Getting distro
+  shell: echo $(lsb_release -s -c)
+  register: distro_name
+
+- name: Installing NodeJS with NodeSource | Add NodeSource deb repository
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/{{ nodejs.version }} xenial main'
+    state: present
+
+- name: Installing NodeJS with NodeSource | Add NodeSource deb-src repository
+  apt_repository:
+    repo: 'deb-src https://deb.nodesource.com/{{ nodejs.version }} xenial main'
+    state: present
+
+- name: Installing NodeJS with NodeSource | Installing packages related to NodeJS
+  apt: name=nodejs state=installed update_cache=yes

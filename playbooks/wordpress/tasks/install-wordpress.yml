@@ -1,0 +1,15 @@
+---
+# First check that wp-config.php exist and is valid first!
+# You can run tag wordpress-add-wp-config to achieve this.
+# This is needs to be reviewed after using it for production.
+- name: Install Wordpress, First Step
+  uri:
+    url: "http://{{ wordpress.install.target }}/wp-admin/install.php?step=1"
+    method: POST
+    body: "language={{ wordpress.install.language }}"
+
+- name: Second step installing wordpress
+  uri:
+    url: "http://{{ wordpress.install.target }}/wp-admin/install.php?step=2"
+    method: POST
+    body: "weblog_title={{ wordpress.install.title }}&user_name={{ wordpress.admin.name }}&admin_password={{ wordpress.admin.password }}&admin_password2={{ wordpress.admin.password }}&admin_email={{ wordpress.admin.email }}&language={{ wordpress.install.language }}"

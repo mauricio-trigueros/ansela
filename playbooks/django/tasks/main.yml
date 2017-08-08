@@ -1,0 +1,27 @@
+---
+- name: Django | Clear cache
+  shell:
+    cmd: |
+      source {{ project.root }}/venv/bin/activate
+      python manage.py clearcache
+  become: true
+  become_user: "{{ project.server.user }}"
+  environment:
+    PASSENGER_APP_ENV: "{{ environment_settings.PASSENGER_APP_ENV }}"
+  args:
+    chdir: "{{ project.root }}"
+  tags: django_clear_cache
+
+- name: Django | Creating cache table
+  shell:
+    cmd: |
+      export PASSENGER_APP_ENV={{ environment_settings.PASSENGER_APP_ENV }}
+      source {{ project.root }}/venv/bin/activate
+      python manage.py createcachetable
+  become: true
+  become_user: "{{ project.server.user }}"
+  environment:
+    PASSENGER_APP_ENV: "{{ environment_settings.PASSENGER_APP_ENV }}"
+  args:
+    chdir: "{{ project.root }}"
+  tags: django_create_cache_table

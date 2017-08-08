@@ -1,0 +1,26 @@
+---
+- name: Installing packages related to MongoDB
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  - mongodb-org-server
+  - python-pymongo
+
+- name: Allow external connections
+  lineinfile: >
+    dest=/etc/mongod.conf
+    regexp="  bindIp: 127.0.0.1"
+    line="  bindIp: 0.0.0.0"
+
+# By default, MongoDB stores data in the /data/db directory.
+# https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/#start-mongod-processes
+- name: Creating /data/db
+  file: path=/data/db state=directory mode=0755
+
+- name: Creating unit file to manage the MongoDB service
+  template: >
+    src=mongodb.service.j2
+    dest=/etc/systemd/system/mongodb.service
+
+# Test: sudo systemctl status mongodb
+- name: Reload service
+  systemd: state=started name=mongodb

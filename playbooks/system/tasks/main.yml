@@ -1,0 +1,20 @@
+---
+# In vbox https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box, there is no
+# python 2.7 by default, so Ansible will not work until we install it, we will get an error like
+# {"changed": false, "failed": true, "module_stderr": "/bin/sh: 1: /usr/bin/python: not found\n", "module_stdout": "", "msg": "MODULE FAILURE", "parsed": false}
+# Also this step is mandatory to work with AWS EC2 instances (Ubuntu 16.04 LTS)
+- name: Install Python 2.7 (mandatory for Ansible)
+  raw: sudo apt-get update -qq && sudo apt-get install -qq python2.7
+  tags: system_install_python_27
+
+- include: set_locales.yml
+  tags: system_set_locales
+
+- include: add_new_users.yml
+  tags: system_add_new_users
+
+- include: add_ssh_keys.yml
+  tags: system_add_ssh_keys
+
+- include: upgrade_packages.yml
+  tags: system_upgrade_packages

@@ -1,0 +1,10 @@
+---
+- name: PostgreSQL, creating user | Creating new user
+  postgresql_user: 
+    name="{{ postgresql.user.username }}"
+    password="{{ postgresql.user.password }}"
+    role_attr_flags=CREATEDB,SUPERUSER
+    encrypted=false
+  become: yes
+  become_user: postgres
+  tags: postgresql_create_user

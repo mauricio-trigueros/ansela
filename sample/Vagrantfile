@@ -1,0 +1,38 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+	config.vm.box = "bento/ubuntu-16.04"
+	config.vm.network "private_network", ip: "192.168.100.55"
+
+	# Mount our host local folder /Users/me/projects/my-wp-theme into the Vagrant path /var/www/wordpress/wp-content/themes/my-wp-theme
+	config.vm.synced_folder "/Users/me/projects/my-wp-theme", "/var/www/wordpress/wp-content/themes/my-wp-theme", create: true, :nfs => { :mount_options => ["dmode=777","fmode=777"] }
+
+	# Calculate memory/number of cores (https://stefanwrobel.com/how-to-make-vagrant-performance-not-suck)
+	host = RbConfig::CONFIG['host_os']
+	# Give VM 1/4 system memory & access to all cpu cores on the host
+	if host =~ /darwin/
+		cpus = `sysctl -n hw.ncpu`.to_i
+		# sysctl returns Bytes and we need to convert to MB
+		mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
+	elsif host =~ /linux/
+		cpus = `nproc`.to_i
+		# meminfo shows KB and we need to convert to MB
+		mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
+	else # sorry Windows folks, I can't help you
+		cpus = 2
+		mem = 1024
+	end
+
+	config.vm.provider :virtualbox do |vb|
+		vb.customize ["modifyvm", :id, "--memory", mem]
+		vb.customize ["modifyvm", :id, "--cpus", cpus]
+		# Speed faster: http://superuser.com/questions/850357/how-to-fix-extremely-slow-virtualbox-network-download-speed
+		vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+	end
+
+end

@@ -1,0 +1,17 @@
+---
+# Install default packages for the system:
+# aptitude: it is mandatory to use the ansible "apt" module
+# unattended-upgrades: this packages will install the automatic updates for us, settings are in
+# 	/etc/apt/apt.conf.d/50unattended-upgrades, to dry-run try: sudo unattended-upgrade --dry-run
+- name: Installing aptitude and default system packages
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  - aptitude
+  - unattended-upgrades
+  - build-essential
+
+- name: Updating and upgrading apt packages
+  apt: >
+    upgrade=yes
+    update_cache=yes
+    cache_valid_time=3600

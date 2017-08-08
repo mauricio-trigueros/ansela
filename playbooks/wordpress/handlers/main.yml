@@ -1,0 +1,9 @@
+---
+- name: wordpress folder permissions
+  file: >
+    path={{ wordpress.install.path }}
+    owner={{ wordpress.permission.user }}
+    group={{ wordpress.permission.group }}
+    state=directory
+    recurse=yes
+    mode=0755

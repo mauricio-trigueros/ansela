@@ -1,0 +1,25 @@
+---
+# Common stuff when we finish the deployment.
+# This file should be included at the end of each deployment-*.yml file
+
+# Usually are Readme files, _deployment, .git....
+- name: Deployment end | Removing files that we do not need from production folder
+  file: >
+    path={{ project.root }}/{{ item }}
+    state=absent
+  with_items: "{{ deployment.to_remove }}"
+  when: deployment.to_remove is defined
+
+- name: Deployment end | Change permission for all the files
+  file: >
+    path={{ project.root }}
+    state=directory
+    recurse=yes
+    owner={{ deployment.permissions.owner }}
+    group={{ deployment.permissions.group }}
+    mode={{ deployment.permissions.mode }}
+
+- name: Deployment end | Removing temporal deployed folder
+  file: >
+    path={{ deployment.local_path }}
+    state=absent

@@ -1,0 +1,40 @@
+---
+- name: Add Phusion Passanger PPA key
+  apt_key: >
+    keyserver=hkp://keyserver.ubuntu.com:80
+    id=561F9B9CAC40B2F7
+    state=present
+
+- name: Add Phusion Passanger sources list
+  apt_repository:
+    repo: 'deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main'
+    state: present
+
+- name: Install Phusion Passanger (and dependencies)
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  # Add HTTPS support for Phusion Passanger APT
+  - apt-transport-https
+  - ca-certificates
+  # Install Phusion Passanger with Nginx
+  - nginx-extras
+  - passenger
+
+- name: Removing default vhosts
+  file: >
+    path="{{ item }}"
+    state=absent
+  with_items:
+  - "/etc/nginx/sites-available/default"
+  - "/etc/nginx/sites-enabled/default"
+
+- name: Phusion Flask | Enabling
+  replace: >
+    dest=/etc/nginx/nginx.conf
+    regexp="{{ item.regexp }}"
+    replace="{{ item.newline }}"
+    backup=yes
+  with_items:
+  - { regexp: '# include \/etc\/nginx\/passenger.conf;', newline: 'include /etc/nginx/passenger.conf;' }
+  notify:
+  - restart nginx

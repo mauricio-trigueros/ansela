@@ -1,0 +1,9 @@
+---
+# Installing default fail2ban program
+- name: System-soft, Fail2ban | Installing apt dependencies
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - fail2ban

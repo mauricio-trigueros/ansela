@@ -1,0 +1,25 @@
+---
+- name: Checking that the database is present
+  mysql_db: >
+    name={{ mysql.server.db }}
+    state=present
+    login_host={{ mysql.server.host }}
+    login_user={{ mysql.root.username }}
+    login_password={{ mysql.root.password }}
+    login_port={{ mysql.server.port }}
+
+- name: Copy Mysql template to temporal folder
+  copy: src={{ mysql.dump }} dest=/tmp/db-development.sql
+
+- name: Populate MySQL database
+  mysql_db: >
+    name={{ mysql.server.db }}
+    state=import
+    target=/tmp/db-development.sql
+    login_host={{ mysql.server.host }}
+    login_user={{ mysql.root.username }}
+    login_password={{ mysql.root.password }}
+    login_port={{ mysql.server.port }}
+
+- name: Remove copied SQL file
+  file: path=/tmp/db-development.sql state=absent

@@ -1,0 +1,12 @@
+---
+- include: deployment_ini.yml
+
+# Now we need to execute yarn
+- name: Executing yarn
+  shell: yarn
+  args:
+    chdir: "{{ deployment.local_path }}"
+
+- include: moving_to_production.yml
+
+- include: deployment_end.yml

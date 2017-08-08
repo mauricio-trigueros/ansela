@@ -1,0 +1,20 @@
+---
+- name: Remove previous upload folder
+  file: 
+    path={{ wordpress.install.path }}/wp-content/uploads/
+    state=absent
+
+- name: Create upload folder
+  file: 
+    path={{ wordpress.install.path }}/wp-content/uploads/
+    owner={{ wordpress.permission.user }}
+    group={{ wordpress.permission.group }}
+    state=directory
+
+# In the root we should see directly "2014", "2015...."
+- name: Unzip uploads
+  unarchive: >
+    src={{ wordpress.uploads }}
+    dest={{ wordpress.install.path }}/wp-content/uploads/ 
+    owner={{ wordpress.permission.user }}
+    group={{ wordpress.permission.group }}

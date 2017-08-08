@@ -1,0 +1,26 @@
+---
+# We install msmtp-mta that creates a sendmail alias to msmtp
+- name: System-soft, MSMTP | Installing msmtp package
+  apt: 
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "msmtp"
+    - "msmtp-mta"
+
+- name: System-soft, MSMTP | Copying msmtp config
+  template: >
+    src=msmtp-config.j2 
+    dest=/etc/msmtprc 
+
+- name: System-soft, MSMTP | Creating log file
+  file: >
+    path=/var/log/msmtp.log 
+    state=touch
+    mode=0666
+
+# To test that the email is working, SSH in the instance, sudo su to user start_new_user_name, and execute:
+# echo -e "Subject: Test Mail\r\n\r\nThis is a test mail" |msmtp --debug --from=default -t myuser@gmail.com
+# Thanks to msmtp-mta, we can use the system sendmail functioN:
+# echo "Message Body" | sendmail myuser@gmail.com

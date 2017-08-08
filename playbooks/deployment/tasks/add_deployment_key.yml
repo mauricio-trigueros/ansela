@@ -1,0 +1,22 @@
+---
+- name: Adding SSH deployment keys | Verifying that SSH folder exist
+  file: >
+    path=/home/{{ deployment.checkout.user }}/.ssh
+    owner={{ deployment.checkout.user }} 
+    group={{ deployment.checkout.user }}
+    state=directory
+  when: deployment.checkout is defined
+
+- name: Adding SSH deployment keys | Copying private key to instance
+  copy: >
+    content="{{ deployment.checkout.ssh_key_content }}"
+    dest=/home/{{ deployment.checkout.user }}/.ssh/{{ deployment.checkout.ssh_key_name }}
+    mode=0600
+    owner={{ deployment.checkout.user }}
+    group={{ deployment.checkout.user }}
+  when: deployment.checkout is defined
+
+# TO FIX: failed to retrieve hostkey. \"/usr/bin/ssh-keyscan -t rsa bitbucket.org\" returned no matches.
+- name: Adding host to SSH known host
+  shell: ssh-keyscan -H {{ deployment.hosting.provider }} >> /home/{{ deployment.checkout.user }}/.ssh/known_hosts
+  become_user: "{{ deployment.checkout.user }}"

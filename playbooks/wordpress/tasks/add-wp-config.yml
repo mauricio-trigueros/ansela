@@ -1,0 +1,13 @@
+---
+- name: Fetch random salts for Wordpress config
+  uri: 
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: yes
+  register: "wp_salt"
+  become: no
+
+- name: Copy Wordpress config file
+  template:
+    src=wp-config.php.j2
+    dest={{ wordpress.install.path }}/wp-config.php
+    mode=0644

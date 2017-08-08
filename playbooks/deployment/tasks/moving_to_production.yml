@@ -1,0 +1,53 @@
+---
+- name: Deployment, moving to production | Registering rollback .tar.gz file name
+  shell: echo "export_{{ project.name }}_$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
+  register: export_file_name
+
+# The first time that we want to do a rollback, the rollback folder do not exist,
+# so we need to create it first.
+- name: Deployment, moving to production | Verifying that rollback folder exist
+  file: >
+    path={{ deployment.rollback.path }}
+    owner={{ deployment.checkout.user }} 
+    group={{ deployment.checkout.user }}
+    state=directory
+
+# In the very first deployment, there is "nothing" to rollback, so we need to be sure 
+# that production folder exist, to do not get a "Cannot stat: No such file or directory" error
+- name: Deployment, moving to production | Verifying that production folder exist
+  file: path={{ project.root }} state=directory
+
+- name: Deployment, moving to production | Creating rollback file
+  shell: tar -czvf {{ deployment.rollback.path }}{{ export_file_name.stdout}} {{ project.root }}
+
+- name: Deployment, moving to production | Adding permissions to rollback file
+  file: >
+    path={{ deployment.rollback.path }}{{ export_file_name.stdout}}
+    owner={{ deployment.checkout.user }} 
+    group={{ deployment.checkout.user }}
+    state=file
+
+- name: Deployment, moving to production | Registering old rollbacks files to remove
+  shell: ls export_{{ project.name }}_*.tar.gz -At | tail --lines=+{{ deployment.rollback.copies }}
+  args:
+    chdir: "{{ deployment.rollback.path }}"
+  register: old_archives_to_remove
+
+- debug: msg="Files to remove file ->{{ old_archives_to_remove.stdout_lines }}<-"
+
+- name: Deployment, moving to production | Removing old rollbacks archives
+  file: >
+    path={{ deployment.rollback.path }}{{ item }}
+    state=absent
+  with_items: "{{ old_archives_to_remove.stdout_lines }}"
+
+
+# This task moves files from temporal folder where we checkout to final production destination
+- name: Deployment, moving to production | Removing production directory
+  file: path={{ project.root }} state=absent
+
+- name: Deployment, moving to production | Creating production directory
+  file: path={{ project.root }} state=directory
+
+- name: Deployment, moving to production | Moving files to production directory
+  command: sudo cp -R {{ deployment.local_path }}{{ deployment.build_folder }}/. {{ project.root }}

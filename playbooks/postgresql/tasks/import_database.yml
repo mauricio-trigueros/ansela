@@ -1,0 +1,9 @@
+---
+- name: PostgreSQL, importing database | Copy SQL file in remote host
+  copy: src="{{ postgresql.dump_to_import }}" dest=/tmp/database-to-import.sql
+
+- name: PostgreSQL, importing database | Importing database
+  shell: PGPASSWORD={{ postgresql.user.password }} psql -h "{{ postgresql.server.host }}" -d "{{ postgresql.server.db }}" -U "{{ postgresql.user.username }}" -f /tmp/database-to-import.sql
+
+- name: PostgreSQL, importing database | Removing SQL file in remote host
+  file: path=/tmp/database-to-import.sql state=absent

@@ -1,0 +1,22 @@
+---
+- name: Installing wordpress dependencies
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  # Mandatory for installing Wordpress
+  - php7.0-mysql 
+  tags: wordpress-install-dependencies
+
+- include: install-wordpress.yml
+  tags: wordpress-install-wordpress
+
+- include: add-wp-config.yml
+  tags: wordpress-add-wp-config
+
+- include: download-wordpress.yml
+  tags: wordpress-download-wordpress
+
+- include: install-plugins.yml
+  tags: wordpress-install-plugins
+
+- include: uploads.yml
+  tags: wordpress-uploads

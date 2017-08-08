@@ -1,0 +1,41 @@
+---
+- name: Adding SSH keys | Verifying that SSH folder exist
+  file: >
+    path=/home/{{ item.user }}/.ssh
+    owner={{ item.user }} 
+    group={{ item.user }}
+    state=directory
+  with_items: "{{ system.add_ssh_keys }}"
+
+- name: Adding SSH keys | Copying private key to instance
+  copy: >
+    content="{{ item.ssh_key_content }}"
+    dest=/home/{{ item.user }}/.ssh/{{ item.ssh_key_name }}
+    mode=0600
+    owner={{ item.user }}
+    group={{ item.user }}
+  with_items: "{{ system.add_ssh_keys }}"
+
+- name: Adding SSH keys | Verifying that git config file exist
+  file: > 
+    path=/home/{{ item.user }}/.ssh/config 
+    owner={{ item.user }} 
+    group={{ item.user }}
+    state=touch
+  with_items: "{{ system.add_ssh_keys }}"
+  when: (item.host is defined) and (item.hostname is defined)
+
+- name: Adding SSH keys | Adding git config to .ssh to instance
+  blockinfile:
+    dest: /home/{{ item.user }}/.ssh/config
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    marker: "# Config for host {{ item.host }} {{ item.hostname }} with key {{ item.ssh_key_name }}"
+    block: |
+     Host {{ item.host }}
+      Hostname {{ item.hostname }}
+      IdentityFile ~/.ssh/{{ item.ssh_key_name }}
+      IdentitiesOnly yes+
+  with_items: "{{ system.add_ssh_keys }}"
+  when: (item.host is defined) and (item.hostname is defined)
+

@@ -1,0 +1,20 @@
+---
+- name: PostgreSQL, exporting database | Creating file name with current time
+  shell: echo "$(date +"%Y-%m-%d--%H-%M-%S").sql"
+  register: filename
+
+- debug: msg="{{filename.stdout}}"
+
+- name: PostgreSQL, exporting database | Exporting database to temporal file in remote host
+  shell: PGPASSWORD={{ postgresql.user.password }} pg_dump -h "{{ postgresql.server.host }}" -U "{{ postgresql.user.username }}" "{{ postgresql.server.db }}" > "/tmp/{{filename.stdout}}"
+
+- name: PostgreSQL, exporting database | Downloading SQL file from remote host
+  fetch: 
+    src=/tmp/{{ filename.stdout }}
+    dest={{ postgresql.dump_folder}}/{{filename.stdout}}
+    fail_on_missing=yes
+    flat=yes
+
+- name: PostgreSQL, exporting database | Removing SQL file from remote host
+  file: path=/tmp/{{ filename.stdout }} state=absent
+

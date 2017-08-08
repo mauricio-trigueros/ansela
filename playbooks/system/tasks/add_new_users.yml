@@ -1,0 +1,17 @@
+---
+- name: Creating new linux users
+  user: >
+    name={{ item.username }} 
+    shell=/bin/bash 
+    groups=sudo 
+    append=yes 
+    state=present 
+    password={{ item.password }}
+  with_items: "{{ system.add_new_users }}"
+
+- name: Adding authorized_key to user (if defined)
+  authorized_key: >
+    user={{ item.username }}
+    key={{ item.authorized_key }}
+  when: item.authorized_key is defined
+  with_items: "{{ system.add_new_users }}"

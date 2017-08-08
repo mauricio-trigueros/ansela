@@ -1,0 +1,40 @@
+---
+- include: install-nodesource.yml
+  tags: nodejs-install-nodesource
+
+
+# Installing all dependencies at the same time can crash the memory.
+# Installing dependencies one at a time helps with that, we need to install que globally
+# and then run "npm-install-que"
+# https://www.npmjs.com/package/npm-install-que
+- name: Install global package "npm-install-que"
+  npm:
+    name: npm-install-que
+    global: yes
+  tags: nodejs-install-global-que
+
+
+- name: Installing package.json dependencies using que, npm-install-que
+  command: npm-install-que
+  become: yes
+  become_user: "{{ deployment.checkout.user }}"
+  args:
+    chdir: "{{ deployment.local_path }}"
+  tags: nodejs-npm-install-que
+
+- name: Installing package.json dependencies using standard npm, npm-install-que
+  command: npm install
+  become: yes
+  become_user: "{{ deployment.checkout.user }}"
+  args:
+    chdir: "{{ deployment.local_path }}"
+  tags: nodejs-npm-install
+
+
+- name: Building version for environment set in settings.php
+  command: npm run build:"{{ project.environment }}"
+  become: yes
+  become_user: "{{ deployment.checkout.user }}"
+  args:
+    chdir: "{{ deployment.local_path }}"
+  tags: nodejs-build-project

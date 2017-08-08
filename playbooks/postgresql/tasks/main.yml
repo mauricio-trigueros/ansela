@@ -1,0 +1,57 @@
+---
+- include: install_server.yml
+  tags: postgresql_install_server
+
+- include: install_client.yml
+  tags: postgresql_install_client
+
+- include: configure_dev_server.yml
+  tags: postgresql_configure_dev_server
+
+- include: create_user.yml
+  tags: postgresql_create_user
+
+- include: import_database.yml
+  tags: postgresql_import_database
+
+- include: export_database.yml
+  tags: postgresql_export_database
+
+- include: sequence_restart.yml
+  tags: postgresql_sequence_restart
+
+# If user application (postgresql.user.username) owns the database, he can drop it,
+# we do not need "postgresql.root.username" for that particular task
+- name: PostgreSQL, drop database
+  postgresql_db: 
+    state=absent
+    name="{{ postgresql.server.db }}"
+    login_host="{{ postgresql.server.host }}"
+    login_user="{{ postgresql.user.username }}"
+    login_password="{{ postgresql.user.password }}"
+  tags: postgresql_drop_database
+
+
+# If user application (postgresql.user.username) owns the database, he can drop it,
+# we do not need "postgresql.root.username" for that particular task
+- name: PostgreSQL, create database
+  postgresql_db: 
+    state=present
+    name="{{ postgresql.server.db }}"
+    owner="{{ postgresql.user.username }}"
+    login_host="{{ postgresql.server.host }}"
+    login_user="{{ postgresql.root.username }}"
+    login_password="{{ postgresql.root.password }}"
+  tags: postgresql_create_database_with_root
+
+- name: PostgreSQL, create user with postgres user
+  shell: psql -c "CREATE USER {{ postgresql.user.username }} WITH PASSWORD '{{ postgresql.user.password }}';"
+  become: true
+  become_user: postgres
+  tags: postgresql_create_user_with_postgres
+
+- name: PostgreSQL, create database with postgres user
+  shell: psql -c "CREATE DATABASE \"{{ postgresql.server.db }}\" WITH OWNER \"{{ postgresql.user.username }}\";"
+  become: true
+  become_user: postgres
+  tags: postgresql_create_database_with_postgres

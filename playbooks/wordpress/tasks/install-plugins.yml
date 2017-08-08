@@ -1,0 +1,13 @@
+---
+- name: Installing Subversion (mandatory to install WP plugins)
+  apt: >
+    name=subversion
+    state=installed
+    update_cache=yes
+
+- name: Install Wordpress plugins
+  subversion: >
+    repo=http://svn.wp-plugins.org/{{ item.name }}/{{ item.version }}/ 
+    dest={{ wordpress.install.path }}/wp-content/plugins/{{ item.name }}
+  with_items: "{{ wordpress.plugins }}"
+  

@@ -1,0 +1,44 @@
+---
+# Restarting sequence number, to avoid issues like:
+# IntegrityError at /admin/app/kpi_table/add/
+# duplicate key value violates unique constraint "kpi_table_pkey"
+# DETAIL:  Key (id)=(2) already exists.
+
+# If we have table "kpi_table" and we want to update the sequence number from terminal, we can do it:
+# Login into PSQL:		
+#			PGPASSWORD=mypass psql -h 127.0.0.1 -d my-database -U my-user
+# Get the latest ID for current column
+#			select max(id) from app_measurement;
+# This will return something like:
+#			 max
+#			-----
+#			 143
+#			(1 row)
+# If we check the sequence:
+#			select start_value, last_value, max_value from kpi_table_id_seq;
+# We will get:
+#			 start_value | last_value |      max_value
+#			-------------+------------+---------------------
+#			           1 |          8 | 9223372036854775807
+#			(1 row)
+# So we need to update the sequence index to 143 + 1 = 144
+#			alter sequence kpi_table_id_seq restart with 144;
+# And if we run again 
+#			select start_value, last_value, max_value from kpi_table_id_seq;
+# Now last value matches the right one that we already set, 144
+
+
+# Variable "postgresql.restart_sequences" holds an array with the names of tables we need to fix it.
+# We need to get the max(id) integer, extracting line 3 of answer (sed -n 3p) and removing spaces (tr -d " \t\n\r")
+# We will keep each "max(id)" in array max_ids_array
+- name: PSQL Restaring sequence | Getting max id of each table
+  shell: PGPASSWORD={{ postgresql.user.password }} psql -h "{{ postgresql.server.host }}" -d "{{ postgresql.server.db }}" -U "{{ postgresql.user.username }}" -c "select max(id) from {{ item }};" | sed -n 3p | tr -d " \t\n\r"
+  register: max_ids_array
+  with_items: "{{ postgresql.restart_sequences }}"
+
+- debug: msg="Table {{ item.item }} has max(id) of {{ item.stdout }}"
+  with_items: "{{max_ids_array.results}}"
+
+- name: PSQL Restaring sequence | Altering sequences with right values (max(id)+1)
+  shell: PGPASSWORD={{ postgresql.user.password }} psql -h "{{ postgresql.server.host }}" -d "{{ postgresql.server.db }}" -U "{{ postgresql.user.username }}" -c "alter sequence {{ item.item }}_id_seq restart with {{ item.stdout | int + 1 }};"
+  with_items: "{{max_ids_array.results}}"

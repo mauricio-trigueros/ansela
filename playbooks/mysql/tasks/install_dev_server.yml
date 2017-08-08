@@ -1,0 +1,31 @@
+---
+#
+# This task installs a dummy MySQL server in the given host.
+# Server is configured to be used in DEVELOPMENT, NOT IN PRODUCTION!
+#
+- name: MySQL, Installing dev server | Installing packages from apt
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+  - mysql-server-5.7
+  - mysql-client
+  - python-mysqldb
+
+- name: MySQL, Installing dev server | Set the root password.
+  mysql_user: name=root password={{mysql.root.password}} host=localhost
+
+# Update my.cnf file with specific configuration
+- name: MySQL, Installing dev server | Configuration file, my.cnf
+  template: src=root-my-cnf.j2 dest=/root/.my.cnf
+
+# We want to give access to root account from the outside (host computer)
+- name: MySQL, Installing dev server | Load easy access file on the VM
+  shell: echo "GRANT ALL ON *.* to root@'%' IDENTIFIED BY '{{ mysql.root.password }}';FLUSH PRIVILEGES;" | mysql -u root -p{{ mysql.root.password }}
+
+- name: MySQL, Installing dev server | Allow connections from outside
+  lineinfile: dest=/etc/mysql/mysql.conf.d/mysqld.cnf regexp="{{ item.before }}" line="{{ item.after }}" backup=yes
+  with_items:
+  - { before: "bind-address   = 127.0.0.1", after: "bind-address    = 0.0.0.0" }
+
+# Restart Mysql service to allow all the changes
+- name: MySQL, Installing dev server | Restarting mysql service to allow access
+  service: name=mysql state=restarted

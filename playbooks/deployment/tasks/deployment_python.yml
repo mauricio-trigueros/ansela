@@ -1,0 +1,18 @@
+---
+- include: deployment_ini.yml
+
+- name: Flask | Installing Python-Eve related packages from apt
+  apt: name={{ item }} state=installed
+  with_items:
+  - python-virtualenv
+  - python-dev
+  - python-pip
+
+- include: moving_to_production.yml
+
+- name: Flask | Install Python-Eve modules in the virtualenv
+  pip: > 
+    requirements={{ project.root }}/requirements.txt
+    virtualenv={{ project.root }}/venv
+
+- include: deployment_end.yml

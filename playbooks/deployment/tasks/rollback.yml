@@ -1,0 +1,34 @@
+---
+- name: Deployment rollback | Getting file name for last deployment
+  shell: ls export_{{ project.name }}_*.tar.gz -Art | tail -n 1
+  args:
+    chdir: "{{ deployment.rollback.path }}"
+  register: import_file_name
+
+- debug: msg="Rollback file ->{{ import_file_name.stdout }}<-"
+
+# import_file_name.stdout will contain the file name (only) of the compressed file to rollback.
+# it will be the last export_*.tar.gz file found in rollback.path folder.
+# if there is no file name, we should skip the rollback process!!
+
+- name: Deployment rollback | Removing production directory
+  file: path={{ project.root }} state=absent
+  when: import_file_name.stdout != ""
+
+- name: Deployment rollback | Creating production directory
+  file: path={{ project.root }} state=directory
+  when: import_file_name.stdout != ""
+
+- name: Deployment rollback | Unzipping production rollback compressed file
+  shell: tar -xzvf {{ deployment.rollback.path }}{{ import_file_name.stdout }} -C /
+  when: import_file_name.stdout != ""
+
+- name: Deployment rollback | Change permission for all the files
+  file: >
+    path={{ project.root }}
+    state=directory
+    recurse=yes
+    owner={{ deployment.permissions.owner }}
+    group={{ deployment.permissions.group }}
+    mode={{ deployment.permissions.mode }}
+  when: import_file_name.stdout != ""

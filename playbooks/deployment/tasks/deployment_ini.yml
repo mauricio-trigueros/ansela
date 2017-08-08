@@ -1,0 +1,28 @@
+---
+# Common stuff for all kind of deployment
+# This file should be included at the beginning of each deployment-*.yml file
+- name: Deployment ini | Installing git and APT dependecies
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "git"
+    - "acl"
+
+- include: add_deployment_key.yml
+
+- name: Deployment ini | Remove the temporal folder where we are going to download the repo.
+  file: path={{ deployment.local_path }} state=absent
+
+- name: Deployment ini | Deploy in temp folder
+  become: true
+  become_user: "{{ deployment.checkout.user }}"
+  git: >
+    repo=git@{{ deployment.hosting.provider }}:{{ deployment.hosting.user }}/{{ deployment.hosting.repo }}
+    dest={{ deployment.local_path }}
+    accept_hostkey=yes
+    force=yes
+    recursive=no
+    key_file=/home/{{ deployment.checkout.user }}/.ssh/{{ deployment.checkout.ssh_key_name }}
+    version={{ deployment.hosting.branch }}
