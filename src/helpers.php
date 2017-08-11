@@ -17,10 +17,13 @@
 		$ok = 'No syntax errors detected in';
 		if (!(substr($output, 0, strlen($ok)) === $ok))
 			return showAndDie("Mandatory file $fileNamePath has wrong PHP syntax");
-		// Load the file and convert it to PHP array, supressing all echoes
+		// Load the file and convert it to PHP array, keeping all echoes in $includeEcho
 		ob_start();
 		$rawPHPFile = include($fileNamePath);
+		$includeEcho = ob_get_contents();
 		ob_end_clean();
+		// If there is someting to echo, then we echo it (DEBUG/INFO messages from getKeyPath, for example)
+		if(strlen($includeEcho) > 2 ) echo $includeEcho;
 		// Check that the file can be imported, if file is just "HELLOOOO", it will pass "php -l",
 		// but when we include it, it will be just empty, an integer with value "1"
 		// The PHP file needs to return something, that is:
