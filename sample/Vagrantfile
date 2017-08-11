@@ -6,7 +6,12 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-	config.vm.box = "bento/ubuntu-16.04"
+	#config.vm.box = "bento/ubuntu-16.04"
+	# Looks like there is an issue with the latest version of this box (August 2017), where the box can not be accessed
+	# https://discourse.roots.io/t/cant-access-bento-ubuntu-16-04/8101
+	# For this reason we changed to "ubuntu/xenial64" (and then user is "ubuntu" instead of vagrant)
+	config.vm.box = "ubuntu/xenial64"
+
 	config.vm.network "private_network", ip: "192.168.100.55"
 
 	# Mount our host local folder /Users/me/projects/my-wp-theme into the Vagrant path /var/www/wordpress/wp-content/themes/my-wp-theme
