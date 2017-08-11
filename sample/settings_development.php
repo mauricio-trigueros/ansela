@@ -12,7 +12,7 @@
 			// in this place we will mount the code (Vagrant) or deploy (staging / production) the code
 			'root' => '/var/www/my-project-running',
 			// environment
-			'environment' => 'staging',
+			'environment' => 'development',
 			// information related about how we connect to the server
 			'server' => array(
 				// the target is the server IP
@@ -24,7 +24,7 @@
 				// If in remote system we do not need to type the password (we can run "sudo..." withot prompting password), then
 				// set ask_sudo_pwd to 'false' (this could be the case of default user ubuntu, in Ubuntu Server LTS 16.04).
 				// 'ask_sudo_pwd' is boolean, but needs to be written as 'true' or 'false' (or 'true' and something different than 'true' as false)
-				'ask_sudo_pwd' => 'false',
+				'ask_sudo_pwd' => false,
 				// ssh key path to connect to the server.
 				// In Vagrant we can now the path with command "vagrant ssh-config", field IdentityFile
 				// There is a shortcut function when you use Vagrant, just type vagrantKey()
