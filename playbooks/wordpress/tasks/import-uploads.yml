@@ -4,6 +4,9 @@
     path={{ wordpress.install.path }}/wp-content/uploads/
     state=absent
 
+- name: Installing zip library
+  apt: name=zip state=installed update_cache=yes
+
 - name: Create upload folder
   file: 
     path={{ wordpress.install.path }}/wp-content/uploads/
