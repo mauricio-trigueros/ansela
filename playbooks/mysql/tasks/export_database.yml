@@ -1,0 +1,22 @@
+---
+- name: MySQL, exporting database | Creating file name with current time
+  shell: echo "$(date +"%Y-%m-%d--%H-%M-%S").sql"
+  register: filename
+
+- debug: msg="{{filename.stdout}}"
+
+- name: MySQL, exporting database | Dumping database
+  mysql_db:
+    state: dump
+    name: all
+    target: /tmp/{{project.name}}_{{project.environment}}_{{ filename.stdout }}
+
+- name: MySQL, exporting database | Downloading SQL file from remote host
+  fetch: 
+    src=/tmp/{{project.name}}_{{project.environment}}_{{ filename.stdout }}
+    dest={{ mysql.dumps.export_folder}}/{{project.name}}_{{project.environment}}_{{ filename.stdout }}
+    fail_on_missing=yes
+    flat=yes
+
+- name: MySQL, exporting database | Removing SQL file from remote host
+  file: path=/tmp/{{project.name}}_{{project.environment}}_{{ filename.stdout }} state=absent

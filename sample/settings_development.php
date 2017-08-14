@@ -101,6 +101,12 @@
 				'host' => '192.168.100.55',
 				'port' => '3306',
 				'db'   => 'mydatabasename'
+			),
+			'dumps' => array(
+				// Folder where we export the SQL files with the database dumps.
+				// Format name is: PROJECT.NAME _PROJECT.ENVIRONMENT_DATE.sql
+				'export_folder' => projectPath().'dumps',
+				'import_file' => projectPath().'my-project_development_2017-08-14--14-03-09.sql'
 			)
 		),
 

@@ -8,18 +8,24 @@
     login_password={{ mysql.root.password }}
     login_port={{ mysql.server.port }}
 
+- name: MySQL, exporting database | Creating file name with current time
+  shell: echo "$(date +"%N").sql"
+  register: filename
+
+- debug: msg="Temporal filename ->{{ filename.stdout }}<-"
+
 - name: Copy Mysql template to temporal folder
-  copy: src={{ mysql.dump }} dest=/tmp/db-development.sql
+  copy: src={{ mysql.dumps.import_file }} dest=/tmp/{{ filename.stdout }}
 
 - name: Populate MySQL database
   mysql_db: >
     name={{ mysql.server.db }}
     state=import
-    target=/tmp/db-development.sql
+    target=/tmp/{{ filename.stdout }}
     login_host={{ mysql.server.host }}
     login_user={{ mysql.root.username }}
     login_password={{ mysql.root.password }}
     login_port={{ mysql.server.port }}
 
 - name: Remove copied SQL file
-  file: path=/tmp/db-development.sql state=absent
+  file: path=/tmp/{{ filename.stdout }} state=absent

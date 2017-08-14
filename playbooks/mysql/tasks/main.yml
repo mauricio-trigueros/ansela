@@ -2,8 +2,11 @@
 - include: install_dev_server.yml
   tags: mysql-install-dev-server
 
-- include: populate_db.yml
-  tags: mysql-populate-db
+- include: import_database.yml
+  tags: mysql-import-database
+
+- include: export_database.yml
+  tags: mysql-export-database
 
 # In order to use in staging/production mysql tag commands (like create user, drop database...)
 # we need to install some packages.
