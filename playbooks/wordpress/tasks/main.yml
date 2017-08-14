@@ -18,5 +18,8 @@
 - include: install-plugins.yml
   tags: wordpress-install-plugins
 
-- include: uploads.yml
-  tags: wordpress-uploads
+- include: import-uploads.yml
+  tags: wordpress-import-uploads
+
+- include: export-uploads.yml
+  tags: wordpress-export-uploads

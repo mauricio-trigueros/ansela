@@ -1,0 +1,24 @@
+---
+- name: WordPress, exporting uploads folder | Setting zip file name
+  shell: echo "$(date +"%Y-%m-%d--%H-%M-%S").zip"
+  register: filename
+
+- name: WordPress, exporting uploads folder | Installing zip library
+  apt: name=zip state=installed update_cache=yes
+
+- name: WordPress, exporting database | Creating zip file with all the uploads folder in remote
+  archive:
+    path={{ wordpress.install.path }}/wp-content/uploads/
+    format=zip
+    dest=/tmp/{{project.name}}_uploads_{{filename.stdout}}
+
+- name: WordPress, exporting uploads folder | Downloding zip file from remote to local
+  fetch:
+    src=/tmp/uploads-folder.zip
+    dest={{ wordpress.uploads.export_folder }}/{{project.name}}_uploads_{{filename.stdout}}
+    flat=yes
+
+- name: WordPress, exporting uploads folder | Removing remote zip file
+  file: 
+    path={{ wordpress.uploads.export_folder }}/{{project.name}}_uploads_{{filename.stdout}}
+    state=absent

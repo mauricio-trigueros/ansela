@@ -237,8 +237,13 @@
 				array( 'name' => 'w3-total-cache', 'version' => 'tags/0.9.4.1' ),
 				array( 'name' => 'global-settings', 'version' => '' )
 			),
-			// Uploads folder. It needs to have at root level all the folder years "2017", "2016"...
-			'uploads' => projectPath().'uploads.zip'
+			// Uploads folder. 
+			'uploads' => array(
+				// Folder where we place all the export. The name syntax is PROJECT.NAME_updates_DATE
+				'export_folder' => projectPath().'uploads',
+				// File to import. It needs to have at root level all the folder years "2017", "2016"...
+				'import_file' => projectPath().'uploads/my-project_2017-08-14--12-09-36.zip'
+			)
 		)
 
 	);

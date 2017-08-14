@@ -14,7 +14,7 @@
 # In the root we should see directly "2014", "2015...."
 - name: Unzip uploads
   unarchive: >
-    src={{ wordpress.uploads }}
+    src={{ wordpress.uploads.import_file }}
     dest={{ wordpress.install.path }}/wp-content/uploads/ 
     owner={{ wordpress.permission.user }}
     group={{ wordpress.permission.group }}
