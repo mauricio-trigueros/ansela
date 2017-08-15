@@ -1,6 +1,6 @@
 ---
 - include: install-nodesource.yml
-  tags: nodejs-install-nodesource
+  tags: nodejs_install-nodesource
 
 
 # Installing all dependencies at the same time can crash the memory.
@@ -11,7 +11,7 @@
   npm:
     name: npm-install-que
     global: yes
-  tags: nodejs-install-global-que
+  tags: nodejs_install-global-que
 
 
 - name: Installing package.json dependencies using que, npm-install-que
@@ -20,7 +20,7 @@
   become_user: "{{ deployment.checkout.user }}"
   args:
     chdir: "{{ deployment.local_path }}"
-  tags: nodejs-npm-install-que
+  tags: nodejs_npm-install-que
 
 - name: Installing package.json dependencies using standard npm, npm-install-que
   command: npm install
@@ -28,7 +28,7 @@
   become_user: "{{ deployment.checkout.user }}"
   args:
     chdir: "{{ deployment.local_path }}"
-  tags: nodejs-npm-install
+  tags: nodejs_npm-install
 
 
 - name: Building version for environment set in settings.php
@@ -37,4 +37,4 @@
   become_user: "{{ deployment.checkout.user }}"
   args:
     chdir: "{{ deployment.local_path }}"
-  tags: nodejs-build-project
+  tags: nodejs_build-project

@@ -5,16 +5,16 @@
 # Also this step is mandatory to work with AWS EC2 instances (Ubuntu 16.04 LTS)
 - name: Install Python 2.7 (mandatory for Ansible)
   raw: sudo apt-get update -qq && sudo apt-get install -qq python2.7
-  tags: system_install_python_27
+  tags: system_install-python-27
 
 - include: set_locales.yml
-  tags: system_set_locales
+  tags: system_set-locales
 
 - include: add_new_users.yml
-  tags: system_add_new_users
+  tags: system_add-new-users
 
 - include: add_ssh_keys.yml
-  tags: system_add_ssh_keys
+  tags: system_add-ssh-keys
 
 - include: upgrade_packages.yml
-  tags: system_upgrade_packages
+  tags: system_upgrade-packages

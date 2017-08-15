@@ -1,14 +1,14 @@
 ---
 - include: msmtp.yml
-  tags: system-soft_install_msmtp
+  tags: system-soft_install-msmtp
 
 - include: mailserver.yml
-  tags: system-soft_install_mailserver
+  tags: system-soft_install-mailserver
 
 - include: fail2ban.yml
-  tags: system-soft_install_fail2ban
+  tags: system-soft_install-fail2ban
 
 # Valid, for example, to unzip uploads folder in Wordpress
 - name: Install unzip
   apt: name="unzip" state=installed update_cache=yes
-  tags: system-soft_install_unzip
+  tags: system-soft_install-unzip

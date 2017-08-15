@@ -8,4 +8,4 @@
 
 - name: Install PHP | Installing PHP7 FPM
   apt: name="php7.0-fpm" state=installed update_cache=yes
-  tags: php-install-php7-fpm
+  tags: php_install-php7-fpm

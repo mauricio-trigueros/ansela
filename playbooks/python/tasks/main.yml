@@ -7,7 +7,7 @@
   with_items:
     - "python-pip"
     - "virtualenv"
-  tags: python-install-virtualenv
+  tags: python_install-virtualenv
 
 # Probably this task will fail!! Review!
 - name: Python | Install requirements.txt
@@ -17,4 +17,4 @@
     virtualenv="{{ project.root }}"/venv
     virtualenv_site_packages=yes
     state=forcereinstall
-  tags: python-install-requirements
+  tags: python_install-requirements

@@ -1,25 +1,25 @@
 ---
 # We need this for installing the server, tools or shell
 - include: prepare.yml
-  tags: mongo-prepare-install
+  tags: mongo_prepare-install
 
 - include: install_dev_server.yml
-  tags: mongo-install-dev-server
+  tags: mongo_install-dev-server
 
 # This usually works to create a user in vagrant box development server
 - name: Create local user
   shell: mongo {{ mongo.server.db }} --eval 'db.createUser({"user":"{{ mongo.user.username }}","pwd":"{{ mongo.user.password }}","roles":[{"role":"dbOwner","db":"{{ mongo.server.db }}"}]});'
-  tags: mongo-create-local-user  
+  tags: mongo_create-local-user  
 
 - name: Installing mongodb-tools
   apt: name=mongodb-org-tools state=installed update_cache=yes
-  tags: mongo-install-tools
+  tags: mongo_install-tools
 
 - name: Installing mongodb-org-shell
   apt: name=mongodb-org-shell state=installed update_cache=yes
-  tags: mongo-install-shell
+  tags: mongo_install-shell
 
 # Command useful to drop staging database in mLab, for example
 - name: Drop database
   shell: mongo {{ mongo.server.host }}:{{ mongo.server.port }}/{{ mongo.server.db }} -u {{ mongo.user.username }} -p {{ mongo.user.password }} --eval "db.dropDatabase();"
-  tags: mongo-drop-database
+  tags: mongo_drop-database

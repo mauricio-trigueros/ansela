@@ -10,7 +10,7 @@
     PASSENGER_APP_ENV: "{{ environment_settings.PASSENGER_APP_ENV }}"
   args:
     chdir: "{{ project.root }}"
-  tags: django_clear_cache
+  tags: django_clear-cache
 
 - name: Django | Creating cache table
   shell:
@@ -24,4 +24,4 @@
     PASSENGER_APP_ENV: "{{ environment_settings.PASSENGER_APP_ENV }}"
   args:
     chdir: "{{ project.root }}"
-  tags: django_create_cache_table
+  tags: django_create-cache-table

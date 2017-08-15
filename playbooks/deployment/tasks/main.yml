@@ -11,15 +11,5 @@
 - include: deployment_static.yml
   tags: deployment_static
 
-
-- include: deployment_ini.yml
-  tags: deployment_ini
-
-- include: deployment_end.yml
-  tags: deployment_end
-
-- include: moving_to_production.yml
-  tags: deployment_moving_to_production
-
 - include: rollback.yml
   tags: deployment_rollback

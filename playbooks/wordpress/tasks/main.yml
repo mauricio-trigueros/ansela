@@ -4,25 +4,25 @@
   with_items:
   # Mandatory for installing Wordpress
   - php7.0-mysql 
-  tags: wordpress-install-dependencies
+  tags: wordpress_install-dependencies
 
 - include: install-wordpress.yml
-  tags: wordpress-install-wordpress
+  tags: wordpress_install-wordpress
 
 - include: add-wp-config.yml
-  tags: wordpress-add-wp-config
+  tags: wordpress_add-wp-config
 
 - include: download-wordpress.yml
-  tags: wordpress-download-wordpress
+  tags: wordpress_download-wordpress
 
 - include: install-plugins.yml
-  tags: wordpress-install-plugins
+  tags: wordpress_install-plugins
 
 - include: install-local-plugins.yml
-  tags: wordpress-install-local-plugins
+  tags: wordpress_install-local-plugins
 
 - include: import-uploads.yml
-  tags: wordpress-import-uploads
+  tags: wordpress_import-uploads
 
 - include: export-uploads.yml
-  tags: wordpress-export-uploads
+  tags: wordpress_export-uploads

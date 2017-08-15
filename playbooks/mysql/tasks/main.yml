@@ -1,12 +1,12 @@
 ---
 - include: install_dev_server.yml
-  tags: mysql-install-dev-server
+  tags: mysql_install-dev-server
 
 - include: import_database.yml
-  tags: mysql-import-database
+  tags: mysql_import-database
 
 - include: export_database.yml
-  tags: mysql-export-database
+  tags: mysql_export-database
 
 # In order to use in staging/production mysql tag commands (like create user, drop database...)
 # we need to install some packages.
@@ -15,7 +15,7 @@
   with_items:
   - python-mysqldb
   - mysql-client
-  tags: mysql-install-client
+  tags: mysql_install-client
 
 # Create mysql app user, with root credentials
 - name: Create MySQL user in development database
@@ -27,7 +27,7 @@
     host=%
     login_user={{ mysql.root.username }}
     login_password={{ mysql.root.password }}
-  tags: mysql-server-create-user
+  tags: mysql_server-create-user
 
 - name: Create MySQL database with user
   mysql_db: >
@@ -37,7 +37,7 @@
     login_user={{ mysql.user.username }}
     login_password={{ mysql.user.password }}
     login_port={{ mysql.server.port }}
-  tags: mysql-server-create-db-with-user
+  tags: mysql_server-create-db-with-user
 
 - name: Create MySQL database with root
   mysql_db: >
@@ -47,4 +47,4 @@
     login_user={{ mysql.root.username }}
     login_password={{ mysql.root.password }}
     login_port={{ mysql.server.port }}
-  tags: mysql-server-create-db-with-root
+  tags: mysql_server-create-db-with-root

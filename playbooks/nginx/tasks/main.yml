@@ -1,12 +1,12 @@
 ---
 - include: install_phusion.yml
-  tags: nginx_install_phusion
+  tags: nginx_install-phusion
 
 - include: install_default.yml
-  tags: nginx_install_default
+  tags: nginx_install-default
 
 - include: add_virtualhost.yml
-  tags: nginx_add_virtualhost
+  tags: nginx_add-virtualhost
 
 - name: Copy passenger_wsgi to remote host
   template: >
@@ -14,5 +14,5 @@
     dest={{ project.root }}/passenger_wsgi.py
     owner="{{ deployment.permissions.owner }}"
     group="{{ deployment.permissions.group }}"
-  tags: nginx-phusion-flask-passengerfile
+  tags: nginx_phusion-flask-passengerfile
   notify: Restat nginx

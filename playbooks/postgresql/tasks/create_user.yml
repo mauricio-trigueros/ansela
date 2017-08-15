@@ -7,4 +7,3 @@
     encrypted=false
   become: yes
   become_user: postgres
-  tags: postgresql_create_user
