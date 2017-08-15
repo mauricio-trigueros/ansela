@@ -37,11 +37,19 @@ We need to start the Vagrant box, with the command:
 vagrant up
 ```
 
-To check that the instance is up and running, we can try to ssh it:
+To check that the instance is up and running, we can try to ssh it. In the same directory where you executed the previus command, just run 
 ```
-ssh vagrant@192.168.100.50
+vagrant ssh
 ```
-Default password is *vagrant*. We could also connect writting [vagrant ssh](https://www.vagrantup.com/docs/cli/ssh.html).
+You can see which SSH key is Vagrant using with the command:
+```
+vagrant ssh-config
+```
+under the name IdentityFile (usually will be */Users/me/my-projects/my-wordpress/_deployment/.vagrant/machines/default/virtualbox/private_key*). So, we could connect to the instance with:
+```
+ssh ubuntu@192.168.100.50 -i /Users/me/my-projects/my-wordpress/_deployment/.vagrant/machines/default/virtualbox/private_key
+```
+your use can be *vagrant* or *ubuntu*, depends on the box that you set in your [Vagrantfile](sample/Vagrantfile).
 
 #### Create the development environment to populate the machine
 
@@ -55,18 +63,18 @@ As we explained, *tags.php* will contain all the steps to populate the instance
 		$tags = array(
 			'development'	=> array(
 				'deploy' => array (
-					'system_set_locales',                 // Setting system locales
-					'system_upgrade_packages',            // Update all pacakges to latest version
-					'mysql-install-dev-server',           // First install the dev mysql server
-					'mysql-server-create-user',           // Create MySQL user that Wordpress will use
-					'mysql-server-create-db-with-user',   // Create MySQL table with previous user
-					'php-install-php7-fpm',               // Installing PHP FPM (for Nginx)
-					'wordpress-install-dependencies',     // Like php-mysql...
-					'wordpress-download-wordpress',       // Download and unzip Wordpress
-					'wordpress-add-wp-config',            // Add wp-config.php file
-					'nginx_install_default',              // Install nginx
-					'nginx_add_virtualhost',              // Add virtualhost
-					'wordpress-install-wordpress'         // Perform Wordpress frontend installation
+					'system_set-locales',                 // Setting system locales
+					'system_upgrade-packages',            // Update all pacakges to latest version
+					'mysql_install-dev-server',           // First install the dev mysql server
+					'mysql_server-create-user',           // Create MySQL user that Wordpress will use
+					'mysql_server-create-db-with-user',   // Create MySQL table with previous user
+					'php_install-php7-fpm',               // Installing PHP FPM (for Nginx)
+					'wordpress_install-dependencies',     // Like php-mysql...
+					'wordpress_download-wordpress',       // Download and unzip Wordpress
+					'wordpress_add-wp-config',            // Add wp-config.php file
+					'nginx_install-default',              // Install nginx
+					'nginx_add-virtualhost',              // Add virtualhost
+					'wordpress_install-wordpress'         // Perform Wordpress frontend installation
 				)
 			)
 		);
@@ -107,8 +115,8 @@ To provide this information, we must create *settings_development.php* file:
 			'environment' => 'development',
 			'server' => array(
 				'target'		=> $ip,
-				'user'			=> 'vagrant',
-				'ask_sudo_pwd' 	=> 'vagrant',
+				'user'			=> 'ubuntu',
+				'ask_sudo_pwd' 	=> false,
 				'sshkey' 		=> vagrantKey()
 			)
 		),

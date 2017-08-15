@@ -72,7 +72,7 @@ The file **tags.php** looks like:
 	$tags = array(
 		'staging' => array(
 			'co-deploy' => array(
-				'system_add_new_users'
+				'system_add-new-users'
 			),
 			'update' => array(
 				'deployment_static'

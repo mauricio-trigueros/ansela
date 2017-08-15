@@ -31,7 +31,7 @@ AnSeLa is designed to handle as many projects as you want, based on the next ide
 1. You must include a **_deployment** folder in your project. This folder will contain:
 	+ A **Vagrant** file, that will describe your development environment
 	 	- It is not mandatory, you need this file if you are using a development environment.
-	+ A **tags.php** file, that will indicate the orders to execute (like *mysql-install-dev-server*) for each environment. 
+	+ A **tags.php** file, that will indicate the orders to execute (like *mysql_install-dev-server*) for each environment. 
 		- It takes the name *tag*, because it is a bunch of Ansible tasks, grouped by a [tag name](http://docs.ansible.com/ansible/latest/playbooks_tags.html).
 		- This file is mandatory, and will contain the *tags* for all the environments.
 		- The PHP file must return a valid JSON file.

@@ -45,9 +45,9 @@ The **tags.php** file looks like:
 		$tags = array(
 			'staging' => array(
 				'deploy' => array(
-					'system_install_python_27',
-					'system_set_locales',
-					'system_upgrade_packages'
+					'system_install-python-27',
+					'system_set-locales',
+					'system_upgrade-packages'
 				)
 			)
 		);
@@ -143,16 +143,16 @@ And the **tags.php** file, for staging looks like:
 	$tags = array(
 		'staging' => array(
 			'deploy' => array(
-				'system_install_python_27',
-				'system_set_locales',
-				'system_upgrade_packages',
-				'php-install-php7-fpm',
-				'wordpress-install-dependencies',
-				'wordpress-download-wordpress',
-				'wordpress-add-wp-config',
-				'nginx_install_default',
-				'nginx_add_virtualhost',
-				'wordpress-install-wordpress'
+				'system_install-python-27',
+				'system_set-locales',
+				'system_upgrade-packages',
+				'php_install-php7-fpm',
+				'wordpress_install-dependencies',
+				'wordpress_download-wordpress',
+				'wordpress_add-wp-config',
+				'nginx_install-default',
+				'nginx_add-virtualhost',
+				'wordpress_install-wordpress'
 			)
 		)
 	);
