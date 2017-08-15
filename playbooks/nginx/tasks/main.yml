@@ -16,3 +16,7 @@
     group="{{ deployment.permissions.group }}"
   tags: nginx_phusion-flask-passengerfile
   notify: Restat nginx
+
+- name: Restat nginx
+  service: name=nginx state=restarted
+  tags: nginx_restart
