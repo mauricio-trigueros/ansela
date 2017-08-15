@@ -243,6 +243,11 @@
 				array( 'name' => 'w3-total-cache', 'version' => 'tags/0.9.4.1' ),
 				array( 'name' => 'global-settings', 'version' => '' )
 			),
+			// some plugins we need to install them as zip files (for example, paid plugins). Then we need to know only 
+			// the full path to the plugin file, and call the command "wordpress-install-local-plugins"
+			'local_plugins' => array(
+				projectPath().'plugins/my-plugin.zip'
+			),
 			// Uploads folder. 
 			'uploads' => array(
 				// Folder where we place all the export. The name syntax is PROJECT.NAME_updates_DATE

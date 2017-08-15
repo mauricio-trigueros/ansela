@@ -1,0 +1,13 @@
+---
+- name: WordPress, installig local plugins | Installing zip library
+  apt: name=zip state=installed update_cache=yes
+
+- name: WordPress, installig local plugins | Unzipping files
+  unarchive:
+    remote_src=no
+    src={{item}}
+    dest={{ wordpress.install.path }}/wp-content/plugins
+    owner={{ wordpress.permission.user }}
+    group={{ wordpress.permission.group }}
+    mode=0755
+  with_items: "{{ wordpress.local_plugins }}"

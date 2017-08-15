@@ -18,6 +18,9 @@
 - include: install-plugins.yml
   tags: wordpress-install-plugins
 
+- include: install-local-plugins.yml
+  tags: wordpress-install-local-plugins
+
 - include: import-uploads.yml
   tags: wordpress-import-uploads
 
