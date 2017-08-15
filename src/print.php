@@ -37,15 +37,17 @@
 				continue;
 			}
 
-			// At this point, we have three kind of lines:
-			//      Lines showing task:
-			// TASK [wordpress : Download Wordpress to a temporal folder]
+			// At this point, we have these kind of lines:
+			// Lines showing task:
+			//      TASK [wordpress : Download Wordpress to a temporal folder]
 			// Result of the task
 			//      ok: [192.168.100.50]
 			//      fatal: [192.168.100.50]: FAILED! => {"changed": fals....
 			//      to retry, use: --limit @/Users/maus/Projects/new_deployer/playbooks/pla
 			// Global result of tag execution:
 			//      192.168.100.50             : ok=1    changed=0    unreachable=0    failed=1
+			// Debug messages, like:
+			//      "msg": "Temporal filename ->788272323.sql<-"
 			if(substr( $line, 0, strlen("fatal: ")) === "fatal: ") {
 				showAndDie(["Error executing ansible task!!", $line]);
 			}
@@ -63,13 +65,24 @@
 				continue;
 			}
 
+
+
+			if(substr( $line, 0, strlen("\"msg\":")) === ("\"msg\":")) {
+				// From "msg": "Temporal filename ->788272323.sql<-" we just want to return only
+				// Temporal filename ->788272323.sql<- (without ")
+				$message = substr(trim(explode(':',$line)[1]), 1, -1);
+				show(Loglevel::Info, "DEBUG MESSAGE: $message");
+				continue;
+			}
+
 			// Show global result of tag action line:
 			$serverIp = $GLOBALS['environmentSettings']['project']->server->target;
 			if(substr( $line, 0, strlen($serverIp)) === $serverIp) {
 				// Line will look like:
 				// 192.168.100.50             : ok=1    changed=0    unreachable=0    failed=0
 				show(Loglevel::Trace, $line);
-				show(Loglevel::Info, explode(':',$line)[1]);
+				$result = explode(':',$line)[1];
+				show(Loglevel::Info, "RESULT: $result");
 				continue;
 			}
 		}
@@ -83,21 +96,21 @@
 			// Ansible full command info....
 			case Loglevel::Trace:
 				$preBlock = "";
-				$postBlock = "\n";
+				$postBlock = "";
 				$preLine = "//TRACE//";
-				$postLine = "";
+				$postLine = "\n";
 				break;
 			case Loglevel::Debug:
 				$preBlock = "";
-				$postBlock = "\n";
+				$postBlock = "";
 				$preLine = "//DEBUG//";
-				$postLine = "";
+				$postLine = "\n";
 				break;
 			case Loglevel::Info:
 				$preBlock = "";
-				$postBlock = "\n";
+				$postBlock = "";
 				$preLine = "//INFO///";
-				$postLine = "";
+				$postLine = "\n";
 				break;
 			case Loglevel::Warn:
 				die("NOT IMPLEMENTED WARN");
@@ -108,9 +121,9 @@
 				break;
 			case Loglevel::Fatal:
 				$preBlock = "";
-				$postBlock = "\n////// FINISHED ////////\n";
+				$postBlock = "////// FINISHED ////////\n";
 				$preLine = "//FATAL//";
-				$postLine = "";
+				$postLine = "\n";
 				break;
 			case Loglevel::AppMessage:
 				$preBlock = "/////////\n";
@@ -120,7 +133,7 @@
 				break;
 			case Loglevel::AppList:
 				$preBlock = "";
-				$postBlock = "\n";
+				$postBlock = "/////////\n";
 				$preLine = "///////// --->";
 				$postLine = "\n";
 				break;
