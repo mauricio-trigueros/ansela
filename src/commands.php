@@ -1,10 +1,7 @@
 <?php
 
 	function commandViewTags(){
-		show(Loglevel::AppMessage, "Showing the tags that you can use in the system...");
-		$output = [];
-		exec("grep -nr 'tags:' playbooks | awk '{print $3}'", $output);
-		show(Loglevel::AppList, $output);
+		show(Loglevel::AppList, getAnselaTags());
 	}
 
 	function commandViewPlaybooks() {

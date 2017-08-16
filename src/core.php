@@ -13,6 +13,13 @@
 		}
 	}
 
+	// Return an array with all ansible tags
+	function getAnselaTags(){
+		$output = [];
+		exec("grep -nr 'tags:' playbooks | awk '{print $3}'", $output);
+		return $output;
+	}
+
 	function executeAction(){
 		show(Loglevel::AppMessage, ["Executing tags:"]);
 		show(Loglevel::AppList, $GLOBALS['actionTags']);
@@ -21,6 +28,13 @@
 		//TODO check that machine is up and running
 
 		addIpToAnsibleHosts($GLOBALS['environmentSettings']['project']->server->target, $GLOBALS['environmentSettings']['project']->name);
+
+		// First check that all tags are valid
+		show(Loglevel::Info, "Checking that all tags are valid...");
+		$validTags = getAnselaTags();
+		foreach ($GLOBALS['actionTags'] as $tag) {
+			if(!in_array($tag, $validTags)) showAndDie("Tag $tag do not exist");
+		}
 
 		foreach ($GLOBALS['actionTags'] as $tag) {
 			show(Loglevel::AppMessage, ["Executing tag $tag"]);
