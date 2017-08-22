@@ -18,3 +18,9 @@
 
 - include: upgrade_packages.yml
   tags: system_upgrade-packages
+
+- name: Install apt dependencies
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items: "{{ system.dependencies.apt }}"
+  when: system.dependencies.apt is defined
+  tags: system_install-apt-dependencies

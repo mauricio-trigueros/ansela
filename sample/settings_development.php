@@ -75,6 +75,14 @@
 					'host' => 'admin.bitbucket.org',
 					'hostname' => 'bitbucket.org'
 				)
+			),
+			// Install all project dependencies
+			'dependencies' => array(
+				// Apt dependencies, to install with "system_install-apt-dependencies"
+				'apt' => array(
+					'build-essential',
+					'libmysqlclient-dev'
+				)
 			)
 		),
 
