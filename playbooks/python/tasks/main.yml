@@ -9,12 +9,8 @@
     - "virtualenv"
   tags: python_install-virtualenv
 
-# Probably this task will fail!! Review!
 - name: Python | Install requirements.txt
-  failed_when: false
   pip: 
-    requirements="{{ project.root }}"/requirements.txt
-    virtualenv="{{ project.root }}"/venv
-    virtualenv_site_packages=yes
-    state=forcereinstall
+    requirements={{ project.root }}/requirements.txt
+    virtualenv={{ project.root }}/venv
   tags: python_install-requirements
