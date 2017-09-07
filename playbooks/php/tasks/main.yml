@@ -4,8 +4,51 @@
   apt: name={{ item }} state=installed update_cache=yes
   with_items:
   - "php7.0"
-  tags: php-install-php7
+  tags: php_install-php7
 
 - name: Install PHP | Installing PHP7 FPM
   apt: name="php7.0-fpm" state=installed update_cache=yes
   tags: php_install-php7-fpm
+
+
+# By default /etc/php/7.0/fpm/php.ini is set to php.ini-production INI file.
+# For dev and staging environments, we need to use php.ini-development file,
+# that is located in /usr/lib/php/7.0/php.ini-development
+# So we need to replace "/etc/php/7.0/fpm/php.ini" with the content of "/usr/lib/php/7.0/php.ini-development"
+# and restart PHP-fpm
+- name: PHP | Replace php.ini to use development
+  copy:
+    src: /usr/lib/php/7.0/php.ini-development
+    dest: /etc/php/7.0/fpm/php.ini
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+    remote_src: yes
+  tags: php_set-fpm-php-ini-to-dev
+
+- name: PHP | Replace php.ini to use production
+  copy:
+    src: /usr/lib/php/7.0/php.ini-production
+    dest: /etc/php/7.0/fpm/php.ini
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+    remote_src: yes
+  tags: php_set-fpm-php-ini-to-prod
+
+- name: PHP | Restart php fpm
+  service: name=php7.0-fpm state=restarted
+  tags: php_restart-fpm
+
+- name: PHP | Override php ini variables
+  lineinfile: 
+    dest=/etc/php/7.0/fpm/php.ini
+    regexp="{{ item.var }}"
+    line="{{ item.value }}"
+    backup=yes
+  with_items: "{{ php.ini }}"
+  tags: php_override-php-ini-fpm-variables
+
+

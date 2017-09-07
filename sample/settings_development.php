@@ -263,6 +263,24 @@
 				// File to import. It needs to have at root level all the folder years "2017", "2016"...
 				'import_file' => projectPath().'uploads/my-project_2017-08-14--12-09-36.zip'
 			)
+		),
+
+		'php' => array(
+			// php.ini values to override, with tag php_override-php-ini-fpm-variables
+			'ini' => array(
+				array(
+					'var'   => 'date.timezone = ',
+					'value' => 'date.timezone = Europe/Stockholm'
+				),
+				array(
+					'var'   => 'upload_max_filesize = ',
+					'value' => 'upload_max_filesize = 20M'
+				),
+				array(
+					'var'   => 'post_max_size = ',
+					'value' => 'post_max_size = 20M'
+				)
+			)
 		)
 
 	);
