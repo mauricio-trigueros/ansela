@@ -3,7 +3,7 @@
   apt: name={{ item }} state=installed update_cache=yes
   with_items:
   # Mandatory for installing Wordpress
-  - php7.0-mysql 
+  - php7.2-mysql 
   tags: wordpress_install-dependencies
 
 - include: install-wordpress.yml
@@ -20,6 +20,9 @@
 
 - include: install-local-plugins.yml
   tags: wordpress_install-local-plugins
+
+- include: install-local-themes.yml
+  tags: wordpress_install-local-themes
 
 - include: import-uploads.yml
   tags: wordpress_import-uploads

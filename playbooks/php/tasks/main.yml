@@ -1,13 +1,13 @@
 ---
-# In Ubuntu 16.04 LTS, default PHP is PHP7
+# In Ubuntu 18.04 LTS, default PHP is PHP7.2
 - name: Install PHP | Installing PHP7
   apt: name={{ item }} state=installed update_cache=yes
   with_items:
-  - "php7.0"
+  - "php7.2"
   tags: php_install-php7
 
 - name: Install PHP | Installing PHP7 FPM
-  apt: name="php7.0-fpm" state=installed update_cache=yes
+  apt: name="php7.2-fpm" state=installed update_cache=yes
   tags: php_install-php7-fpm
 
 
@@ -18,8 +18,8 @@
 # and restart PHP-fpm
 - name: PHP | Replace php.ini to use development
   copy:
-    src: /usr/lib/php/7.0/php.ini-development
-    dest: /etc/php/7.0/fpm/php.ini
+    src: /usr/lib/php/7.2/php.ini-development
+    dest: /etc/php/7.2/fpm/php.ini
     owner: root
     group: root
     mode: 0644
@@ -29,8 +29,8 @@
 
 - name: PHP | Replace php.ini to use production
   copy:
-    src: /usr/lib/php/7.0/php.ini-production
-    dest: /etc/php/7.0/fpm/php.ini
+    src: /usr/lib/php/7.2/php.ini-production
+    dest: /etc/php/7.2/fpm/php.ini
     owner: root
     group: root
     mode: 0644
@@ -39,12 +39,12 @@
   tags: php_set-fpm-php-ini-to-prod
 
 - name: PHP | Restart php fpm
-  service: name=php7.0-fpm state=restarted
+  service: name=php7.2-fpm state=restarted
   tags: php_restart-fpm
 
 - name: PHP | Override php ini variables
   lineinfile: 
-    dest=/etc/php/7.0/fpm/php.ini
+    dest=/etc/php/7.2/fpm/php.ini
     regexp="{{ item.var }}"
     line="{{ item.value }}"
     backup=yes
